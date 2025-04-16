@@ -21,6 +21,10 @@ module.exports = (sequelizeDatabase, DataTypes) => {
         allowNull: false,
         foreignKey: true,
         Comment: "ID of the store associated with the brand",
+        references: {
+          model: "stores",
+          key: "store_id",
+        },
       },
       status: {
         type: DataTypes.BOOLEAN,
