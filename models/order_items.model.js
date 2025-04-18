@@ -1,5 +1,5 @@
-module.exports = (sequelizeDatabase, DataTypes) => {
-    const OrderItem = sequelizeDatabase.define("OrderItem", {
+const OrderItem = (sequelizeDatabase, DataTypes) => {
+    return sequelizeDatabase.define("OrderItem", {
         order_items_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -30,14 +30,13 @@ module.exports = (sequelizeDatabase, DataTypes) => {
             allowNull: false
         }
     },
-        {
-            tableName: "order_items",
-            timestamps: false,
-            engine: "InnoDB"
-        }
-    );
-
-    return OrderItem;
+    {
+        tableName: "order_items",
+        timestamps: false,
+        engine: "InnoDB"
+    });
 };
+
+export default OrderItem;
 
 

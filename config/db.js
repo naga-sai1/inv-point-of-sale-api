@@ -3,28 +3,28 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const brandsModel = require("../models/brands.model");
-const categoryModel = require("../models/category.model");
-const customersModel = require("../models/customers.model");
-const employeesModel = require("../models/employees.model");
-const OrderItemsModel = require("../models/order_items.model");
-const ordersModel = require("../models/orders.model");
-const paymentsModel = require("../models/payments.model");
-const productsModel = require("../models/products.model");
-const storesModel = require("../models/stores.model");
-const subCategoriesModel = require("../models/sub_categories.model");
-const suppliersModel = require("../models/suppliers.model");
-const unitsModel = require("../models/units.model");
-const usersModel = require("../models/users.model");
+import brandsModel from "../models/brands.model.js";
+import categoryModel from "../models/categories.model.js";
+import customersModel from "../models/customers.model.js";
+import employeesModel from "../models/employees.model.js";
+import OrderItemsModel from "../models/order_items.model.js";
+import ordersModel from "../models/orders.model.js";
+import paymentsModel from "../models/payment.model.js";
+import productsModel from "../models/products.model.js";
+import storesModel from "../models/stores.model.js";
+import subCategoriesModel from "../models/sub_categories.model.js";
+import suppliersModel from "../models/suppliers.model.js";
+import unitsModel from "../models/units.model.js";
+import usersModel from "../models/users.model.js";
 
 const sequelizeDatabase = new Sequelize(
-  "inv_point_of_sale",
-  "root",
-  "123@Apple",
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
   {
-    host: "127.0.0.1",
+    host: process.env.DB_HOST,
     dialect: "mysql",
-    port: 3306,
+    port: process.env.DB_PORT,
     logging: false,
   }
 );
@@ -42,8 +42,6 @@ const SubCategories = subCategoriesModel(sequelizeDatabase, Sequelize.DataTypes)
 const Suppliers = suppliersModel(sequelizeDatabase, Sequelize.DataTypes);
 const Units = unitsModel(sequelizeDatabase, Sequelize.DataTypes);
 const Users = usersModel(sequelizeDatabase, Sequelize.DataTypes);
-
-
 
 // Define associations
 Products.belongsTo(Category, {
@@ -156,17 +154,17 @@ Customers.hasMany(Orders, {
 
 Stores.hasMany(Orders, {
   foreignKey: "store_id",
-  sourceKey: "stores_id"
+  sourceKey: "store_id", 
 });
 
 Stores.hasMany(Products, {
   foreignKey: "store_id",
-  sourceKey: "stores_id"
+  sourceKey: "store_id", 
 });
 
 Products.belongsTo(Stores, {
   foreignKey: "store_id",
-  targetKey: "stores_id"
+  targetKey: "store_id"
 });
 
 Suppliers.hasMany(Products, {
@@ -183,8 +181,6 @@ Users.belongsTo(Suppliers, {
   foreignKey: "supplier_id",
   targetKey: "suppliers_id"
 });
-
-
 
 const Models = {
   Brand,
@@ -204,7 +200,7 @@ const Models = {
 
 const connection = {};
 
-const connectToDatabase = async () => {
+export const connectToDatabase = async () => {
   try {
     if (!connection.isConnected) {
       await sequelizeDatabase.authenticate();
@@ -221,8 +217,4 @@ const connectToDatabase = async () => {
   }
 };
 
-module.exports = {
-  connectToDatabase,
-  sequelizeDatabase,
-  connection,
-};
+export { sequelizeDatabase, connection };

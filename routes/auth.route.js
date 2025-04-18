@@ -1,15 +1,14 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
-const { login, signup } = require('../controllers/auth.controller');
-const { authenticateToken, authorizeRole } = require('../middleware/auth.middleware');
+import { login, signup } from "../controllers/auth.controller.js";
+import { authenticateToken, authorizeRole } from "../middleware/auth.middleware.js";
 
-// Public routes
-router.post('/login', login);
-router.post('/signup', authenticateToken, authorizeRole(['super-admin']), signup); // Only super-admin can create new users
-router.get('/test_auth', authenticateToken, (req, res) => {
+router.post("/login", login);
+router.post("/signup", authenticateToken, authorizeRole(["super-admin"]), signup);
+router.get("/test_auth", authenticateToken, (req, res) => {
     res.json({
-        message: "JWT verification successful"
-    })
-})
+        message: "JWT verification successful",
+    });
+});
 
-module.exports = router;
+export default router;

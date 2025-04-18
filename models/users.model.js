@@ -1,5 +1,5 @@
-module.exports = (sequelizeDatabase, DataTypes) => {
-  const User = sequelizeDatabase.define(
+const User = (sequelizeDatabase, DataTypes) => {
+  return sequelizeDatabase.define(
     "User",
     {
       user_id: {
@@ -55,5 +55,6 @@ module.exports = (sequelizeDatabase, DataTypes) => {
       engine: "InnoDB",
     }
   );
-  return User;
 };
+
+export default User;

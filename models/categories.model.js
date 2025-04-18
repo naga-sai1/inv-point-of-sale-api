@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes) => {
-  const Category = sequelize.define(
+const Category = (sequelize, DataTypes) => {
+  return sequelize.define(
     "categories",
     {
       category_id: {
@@ -41,6 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-
-  return Category;
 };
+
+export default Category;

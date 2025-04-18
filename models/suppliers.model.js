@@ -1,5 +1,5 @@
-module.export = (sequelizeDatabase, DataTypes) => {
-  const Supplier = sequelizeDatabase.define(
+const Supplier = (sequelizeDatabase, DataTypes) => {
+  return sequelizeDatabase.define(
     "Supplier",
     {
       suppliers_id: {
@@ -90,6 +90,6 @@ module.export = (sequelizeDatabase, DataTypes) => {
       engine: "InnoDB",
     }
   );
-
-  return Supplier;
 };
+
+export default Supplier;
