@@ -12,7 +12,7 @@ const Order = (sequelizeDatabase, DataTypes) => {
         allowNull: false,
         references: {
           model: "customers",
-          key: "customer_id",
+          key: "customers_id",
         },
       },
       user_id: {

@@ -71,10 +71,6 @@ const products = (sequelizeDatabase, DataTypes) => {
       created_by: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: "users",
-          key: "user_id",
-        },
       },
       updated_by: {
         type: DataTypes.INTEGER,

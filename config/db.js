@@ -17,6 +17,7 @@ import suppliersModel from "../models/suppliers.model.js";
 import unitsModel from "../models/units.model.js";
 import usersModel from "../models/users.model.js";
 
+
 const sequelizeDatabase = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -214,6 +215,7 @@ export const connectToDatabase = async () => {
     }
   } catch (error) {
     console.error("Database connection failed:", error);
+    throw new Error("Failed to connect to the database");
   }
 };
 

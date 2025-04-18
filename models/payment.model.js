@@ -12,7 +12,7 @@ const Payment = (sequelizeDatabase, DataTypes) => {
         allowNull: true,
         references: {
           model: "orders",
-          key: "orders_id",
+          key: "orders_id", 
         },
       },
       transaction_id: {
@@ -25,7 +25,7 @@ const Payment = (sequelizeDatabase, DataTypes) => {
       },
     },
     {
-      tableName: "payments",
+      tableName: "payment",
       timestamps: false,
       engine: "InnoDB",
     }

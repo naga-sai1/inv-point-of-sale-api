@@ -18,6 +18,7 @@ const User = (sequelizeDatabase, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       role: {
         type: DataTypes.ENUM("admin", "manager", "cashier"),

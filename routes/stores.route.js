@@ -7,7 +7,7 @@ import {
 import { createStore } from "../controllers/stores.controller.js";
 
 router.post(
-  "/stores",
+  "/create_stores",
   authenticateToken,
   authorizeRole(["admin"]),
   createStore

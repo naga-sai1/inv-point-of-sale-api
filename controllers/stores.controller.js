@@ -5,10 +5,10 @@ import { Op } from "sequelize";
 const createStore = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
-    const { store_name, address, phone_number, email, status } = req.body;
+    const { name, address, phone, email } = req.body;
 
     // Validate required fields
-    if (!store_name || !address || !phone_number || !email) {
+    if (!name || !address || !phone || !email) {
       return res.status(400).json({
         message: "Store name, address, phone number, and email are required",
       });
@@ -17,7 +17,7 @@ const createStore = async (req, res) => {
     // Check if store already exists using store_name and phone_number
     const existingStore = await Stores.findOne({
       where: {
-        [Op.or]: [{ store_name }, { phone_number }],
+        [Op.or]: [{ name }, { phone }],
       },
     });
 
@@ -29,11 +29,10 @@ const createStore = async (req, res) => {
 
     // Create new store
     const newStore = await Stores.create({
-      store_name,
+      name,
       address,
-      phone_number,
+      phone,
       email,
-      status: status || true,
     });
 
     res.status(201).json({

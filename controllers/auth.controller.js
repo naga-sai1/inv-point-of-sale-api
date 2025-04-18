@@ -6,6 +6,11 @@ import { Op } from "sequelize";
 const login = async (req, res) => {
   try {
     const { Users } = await connectToDatabase();
+
+    if (!Users) {
+      throw new Error("Users model is not defined. Check database connection or model registration.");
+    }
+
     const { username, password } = req.body;
 
     const user = await Users.findOne({ where: { username } });
