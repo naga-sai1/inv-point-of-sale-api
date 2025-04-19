@@ -27,12 +27,15 @@ const createStore = async (req, res) => {
       });
     }
 
+    const created_at = new Date();
+
     // Create new store
     const newStore = await Stores.create({
       name,
       address,
       phone,
       email,
+      created_at
     });
 
     res.status(201).json({
@@ -47,5 +50,7 @@ const createStore = async (req, res) => {
     });
   }
 };
+
+
 
 export { createStore };

@@ -62,22 +62,12 @@ Products.belongsTo(Brand, {
   targetKey: "brand_id",
 });
 
-Products.belongsTo(Users, {
-  foreignKey: "created_by",
-  targetKey: "user_id",
-  as: "creator",
-});
 
 Products.belongsTo(Units, {
   foreignKey: "unit_id",
   targetKey: "unit_id",
 });
 
-Users.hasMany(Products, {
-  foreignKey: "created_by",
-  sourceKey: "user_id",
-  as: "created_products",
-});
 
 Category.hasMany(Products, {
   foreignKey: "category_id",
@@ -173,15 +163,6 @@ Suppliers.hasMany(Products, {
   sourceKey: "suppliers_id"
 });
 
-Suppliers.hasMany(Users, {
-  foreignKey: "supplier_id",
-  sourceKey: "suppliers_id"
-});
-
-Users.belongsTo(Suppliers, {
-  foreignKey: "supplier_id",
-  targetKey: "suppliers_id"
-});
 
 const Models = {
   Brand,

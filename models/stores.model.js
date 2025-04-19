@@ -28,18 +28,12 @@ const stores = (sequelizeDatabase, DataTypes) => {
         allowNull: false,
         defaultValue: true,
       },
-      created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
     },
     {
       tableName: "stores",
       timestamps: true,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
       engine: "InnoDB",
     }
   );

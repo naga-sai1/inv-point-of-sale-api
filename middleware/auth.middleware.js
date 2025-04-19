@@ -16,17 +16,13 @@ export const authenticateToken = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-  console.log("Extracted Token:", token);
 
   if (!token) {
     return res.status(401).json({ message: "Authentication required" });
   }
 
-  console.log("JWT Secret:", process.env.JWT_SECRET);
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded);
     req.user = decoded;
     next();
   } catch (error) {

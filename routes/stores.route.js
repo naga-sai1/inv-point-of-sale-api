@@ -9,7 +9,7 @@ import { createStore } from "../controllers/stores.controller.js";
 router.post(
   "/create_stores",
   authenticateToken,
-  authorizeRole(["admin"]),
+  authorizeRole(["super-admin"]),
   createStore
 );
 

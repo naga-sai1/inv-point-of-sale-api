@@ -101,6 +101,8 @@ const signup = async (req, res) => {
       email,
       role: role || "cashier",
       last_login: new Date(),
+      store_id,
+      status: true,
     });
 
     const token = jwt.sign(
@@ -128,4 +130,25 @@ const signup = async (req, res) => {
   }
 };
 
-export { login, signup };
+// get user's by store_id
+const getUsersByStoreId = async (req, res) => {
+  try {
+    const { Users } = await connectToDatabase();
+    const { store_id } = req.params;
+
+    const users = await Users.findAll({
+      where: { store_id },
+      attributes: ["user_id", "username", "email", "role", "status"],
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error in getUsersByStoreId:", error);
+    res.status(500).json({
+      message: "Failed to retrieve users",
+      error: error.message,
+    });
+  }
+};
+
+export { login, signup, getUsersByStoreId };

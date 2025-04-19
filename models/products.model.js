@@ -68,18 +68,26 @@ const products = (sequelizeDatabase, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      created_by: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      updated_by: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: "users",
-          key: "user_id",
-        },
-      },
+      // created_by: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: true,
+      //   references: {
+      //     model: "users",
+      //     key: "user_id",
+      //   },
+      //   onDelete: "SET NULL",
+      //   onUpdate: "CASCADE",
+      // },
+      // updated_by: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: true,
+      //   references: {
+      //     model: "users",
+      //     key: "user_id",
+      //   },
+      //   onDelete: "SET NULL",
+      //   onUpdate: "CASCADE",
+      // },
       status: {
         type: DataTypes.ENUM("active", "inactive", "discontinued"),
         defaultValue: "active",
