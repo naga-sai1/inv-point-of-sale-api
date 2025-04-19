@@ -1,4 +1,4 @@
-import {connectToDatabase} from "../config/db.js";
+import { connectToDatabase } from "../config/db.js";
 import { Op } from "sequelize";
 
 // Function to create a new store
@@ -35,7 +35,7 @@ const createStore = async (req, res) => {
       address,
       phone,
       email,
-      created_at
+      created_at,
     });
 
     res.status(201).json({
@@ -116,4 +116,56 @@ const getStoreById = async (req, res) => {
   }
 };
 
-export { createStore, getallStores, getStoreById };
+// update store by id
+const updateStoreById = async (req, res) => {
+  try {
+    const { Stores } = await connectToDatabase();
+    const { store_id } = req.params;
+    const { name, address, phone, email } = req.body;
+
+    // Validate required fields
+    if (!name || !address || !phone || !email) {
+      return res.status(400).json({
+        message: "Store name, address, phone number, and email are required",
+      });
+    }
+
+    // Check if store already exists using store_name and phone_number
+    const existingStore = await Stores.findOne({
+      where: {
+        [Op.or]: [{ name }, { phone }],
+      },
+    });
+
+    if (existingStore) {
+      return res.status(409).json({
+        message: "Store with this name or phone number already exists",
+      });
+    }
+
+    // Update store
+    const updatedStore = await Stores.update(
+      { name, address, phone, email },
+      { where: { store_id } }
+    );
+
+    if (!updatedStore[0]) {
+      return res.status(404).json({
+        message: "Store not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Store updated successfully",
+      store: updatedStore,
+    });
+  } catch (error) {
+    console.error("Error in updateStoreById:", error);
+    res.status(500).json({
+      message: "Failed to update store",
+      error: error.message,
+    });
+  }
+};
+
+export { createStore, getallStores, getStoreById, updateStoreById };

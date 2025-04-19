@@ -4,7 +4,12 @@ import {
   authenticateToken,
   authorizeRole,
 } from "../middleware/auth.middleware.js";
-import { createStore, getallStores, getStoreById } from "../controllers/stores.controller.js";
+import {
+  createStore,
+  getallStores,
+  getStoreById,
+  updateStoreById,
+} from "../controllers/stores.controller.js";
 
 router.post(
   "/create_stores",
@@ -23,6 +28,12 @@ router.get(
   authenticateToken,
   authorizeRole(["super-admin"]),
   getStoreById
+);
+router.put(
+  "/update_store_by_id/:store_id",
+  authenticateToken,
+  authorizeRole(["super-admin"]),
+  updateStoreById
 );
 
 export default router;
