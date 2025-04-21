@@ -121,43 +121,39 @@ const updateStoreById = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
     const { store_id } = req.params;
-    const { name, address, phone, email } = req.body;
-
-    // Validate required fields
-    if (!name || !address || !phone || !email) {
-      return res.status(400).json({
-        message: "Store name, address, phone number, and email are required",
-      });
-    }
-
-    // Check if store already exists using store_name and phone_number
-    const existingStore = await Stores.findOne({
-      where: {
-        [Op.or]: [{ name }, { phone }],
-      },
+    //  check if store exists
+    const store = await Stores.findOne({
+      where: { store_id },
     });
 
-    if (existingStore) {
-      return res.status(409).json({
-        message: "Store with this name or phone number already exists",
-      });
-    }
-
-    // Update store
-    const updatedStore = await Stores.update(
-      { name, address, phone, email },
-      { where: { store_id } }
-    );
-
-    if (!updatedStore[0]) {
+    if (!store) {
       return res.status(404).json({
         message: "Store not found",
       });
     }
 
+    // check if only name and phone number are provided on request body
+    const { name, phone } = req.body;
+    if (name || phone) {
+      console.log("called");
+      const existingStore = await Stores.findOne({
+        where: {
+          [Op.or]: [{ name }, { phone }],
+        },
+      });
+
+      if (existingStore) {
+        return res.status(409).json({
+          message: "Store with this name or phone number already exists",
+        });
+      }
+    }
+
+    // Update store
+    await Stores.update({ ...req.body }, { where: { store_id } });
+
     res.status(200).json({
       message: "Store updated successfully",
-      store: updatedStore,
     });
   } catch (error) {
     console.error("Error in updateStoreById:", error);
