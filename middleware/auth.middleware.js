@@ -7,7 +7,7 @@ dotenv.config();
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
-  console.log("Authorization Header:", authHeader);
+  // console.log("Authorization Header:", authHeader);
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res
