@@ -1,15 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import {connectToDatabase} from "../config/db.js";
+import { connectToDatabase } from "../config/db.js";
 import { Op } from "sequelize";
 
 const login = async (req, res) => {
   try {
-    const { Users } = await connectToDatabase();
-
-    if (!Users) {
-      throw new Error("Users model is not defined. Check database connection or model registration.");
-    }
+    const { Users, Stores } = await connectToDatabase();
 
     const { username, password } = req.body;
 
@@ -28,6 +24,15 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
+
+    if (user.role !== "super-admin" ){
+      // check if store is active
+      const store = await Stores.findOne({ where: { store_id: req.params.store_id } });
+      if (!store || !store.isActive) {
+        return res.status(403).json({ message: "Store is not active" });
+      }
+    }
+
 
     await user.update({ last_login: new Date() });
 

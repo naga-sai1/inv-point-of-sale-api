@@ -139,6 +139,7 @@ const updateStoreById = async (req, res) => {
       const existingStore = await Stores.findOne({
         where: {
           [Op.or]: [{ name }, { phone }],
+          store_id: { [Op.ne]: store_id }, // Exclude the current store_id from the check
         },
       });
 
