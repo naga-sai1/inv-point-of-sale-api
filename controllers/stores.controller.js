@@ -133,7 +133,9 @@ const updateStoreById = async (req, res) => {
     }
 
     // check if only name and phone number are provided on request body
-    const { name, phone } = req.body;
+    let name = req.body.name || "";
+    let phone = req.body.phone || "";
+    
     if (name || phone) {
       console.log("called");
       const existingStore = await Stores.findOne({
