@@ -55,9 +55,20 @@ const createStore = async (req, res) => {
 const getallStores = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
-    const { page, limit, search } = req.query;
+    const { page = 1, limit = 10, search = "" } = req.query; 
 
-    const offset = (page - 1) * limit;
+    // Parse page and limit as integers
+    const parsedPage = parseInt(page, 10);
+    const parsedLimit = parseInt(limit, 10);
+
+    if (isNaN(parsedPage) || isNaN(parsedLimit) || parsedPage <= 0 || parsedLimit <= 0) {
+      return res.status(400).json({
+        message: "Invalid page or limit value. Both must be positive integers.",
+      });
+    }
+
+    const offset = (parsedPage - 1) * parsedLimit;
+
     const stores = await Stores.findAndCountAll({
       where: {
         [Op.or]: [
@@ -67,7 +78,7 @@ const getallStores = async (req, res) => {
           { email: { [Op.like]: `%${search}%` } },
         ],
       },
-      limit,
+      limit: parsedLimit,
       offset,
     });
 
@@ -75,8 +86,8 @@ const getallStores = async (req, res) => {
       message: "Stores retrieved successfully",
       stores: stores.rows,
       totalStores: stores.count,
-      totalPages: Math.ceil(stores.count / limit),
-      currentPage: page,
+      totalPages: Math.ceil(stores.count / parsedLimit),
+      currentPage: parsedPage,
     });
   } catch (error) {
     console.error("Error in getAllStores:", error);
