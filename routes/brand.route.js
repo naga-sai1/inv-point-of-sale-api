@@ -10,7 +10,7 @@ import {
   getBrandNames,
 } from "../controllers/brand.controller.js";
 
-router.get("/get_all_brands", getAllBrands);
+router.get("/get_all_brands/:store_id", getAllBrands);
 router.get("/get_brand/:id", getBrandById);
 router.post("/create_brand", upload.single("logo"), createBrand);
 router.put("/update_brand/:id", upload.single("logo"), updateBrand);

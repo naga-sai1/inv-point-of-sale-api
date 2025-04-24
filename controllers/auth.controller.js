@@ -25,14 +25,15 @@ const login = async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    if (user.role !== "super-admin" ){
+    if (user.role !== "super-admin") {
       // check if store is active
-      const store = await Stores.findOne({ where: { store_id: req.params.store_id } });
-      if (!store || !store.isActive) {
+      const store = await Stores.findOne({
+        where: { store_id: user.store_id },
+      });
+      if (!store || !store.is_active) {
         return res.status(403).json({ message: "Store is not active" });
       }
     }
-
 
     await user.update({ last_login: new Date() });
 
@@ -43,6 +44,8 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        last_login: user.last_login,
+        store_id: user.store_id,
       },
     });
   } catch (error) {

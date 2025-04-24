@@ -121,6 +121,7 @@ const updateStoreById = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
     const { store_id } = req.params;
+    
     //  check if store exists
     const store = await Stores.findOne({
       where: { store_id },
@@ -135,7 +136,7 @@ const updateStoreById = async (req, res) => {
     // check if only name and phone number are provided on request body
     let name = req.body.name || "";
     let phone = req.body.phone || "";
-    
+
     if (name || phone) {
       console.log("called");
       const existingStore = await Stores.findOne({
@@ -166,5 +167,6 @@ const updateStoreById = async (req, res) => {
     });
   }
 };
+
 
 export { createStore, getallStores, getStoreById, updateStoreById };
