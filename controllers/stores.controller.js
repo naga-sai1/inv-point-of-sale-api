@@ -55,7 +55,7 @@ const createStore = async (req, res) => {
 const getallStores = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
-    const { page = 1, limit = 10, search = "" } = req.query;
+    const { page, limit, search } = req.query;
 
     const offset = (page - 1) * limit;
     const stores = await Stores.findAndCountAll({
