@@ -121,7 +121,7 @@ const updateStoreById = async (req, res) => {
   try {
     const { Stores } = await connectToDatabase();
     const { store_id } = req.params;
-    
+
     //  check if store exists
     const store = await Stores.findOne({
       where: { store_id },
@@ -167,6 +167,5 @@ const updateStoreById = async (req, res) => {
     });
   }
 };
-
 
 export { createStore, getallStores, getStoreById, updateStoreById };
