@@ -1,6 +1,11 @@
 import express from "express";
 const router = express.Router();
-import { login, signup, getUsersByStoreId } from "../controllers/auth.controller.js";
+import {
+  login,
+  signup,
+  getUsersByStoreId,
+  updateUserById,
+} from "../controllers/auth.controller.js";
 import {
   authenticateToken,
   authorizeRole,
@@ -23,6 +28,12 @@ router.get(
   authenticateToken,
   authorizeRole(["super-admin"]),
   getUsersByStoreId
+);
+router.put(
+  "/update_user_by_id/:user_id",
+  authenticateToken,
+  authorizeRole(["super-admin"]),
+  updateUserById
 );
 
 export default router;

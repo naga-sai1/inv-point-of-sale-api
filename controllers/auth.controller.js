@@ -141,8 +141,16 @@ const signup = async (req, res) => {
 // get user's by store_id
 const getUsersByStoreId = async (req, res) => {
   try {
-    const { Users } = await connectToDatabase();
+    const { Users, Stores } = await connectToDatabase();
     const { store_id } = req.params;
+
+    //check if store exists
+    const store = await Stores.findOne({ where: { store_id } });
+    if (!store) {
+      return res.status(400).json({
+        message: "Store does not exist",
+      });
+    }
 
     const users = await Users.findAll({
       where: { store_id },
@@ -159,4 +167,56 @@ const getUsersByStoreId = async (req, res) => {
   }
 };
 
-export { login, signup, getUsersByStoreId };
+// update user by user_id
+const updateUserById = async (req, res) => {
+  try {
+    const { Users } = await connectToDatabase();
+    const { user_id } = req.params;
+    const { username, password, email, role, status } = req.body;
+
+    const user = await Users.findOne({ where: { user_id } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // check if username or email already exists
+    const existingUser = await Users.findOne({
+      where: {
+        [Op.or]: [{ username }, { email }],
+        user_id: { [Op.ne]: user_id }, // exclude the current user
+      },
+    });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Username or email already exists",
+      });
+    }
+
+    await user.update({
+      username,
+      password: password ? await bcrypt.hash(password, 10) : user.password,
+      email,
+      role,
+      status,
+    });
+
+    res.status(200).json({
+      message: "User updated successfully",
+      user: {
+        userId: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
+  } catch (error) {
+    console.error("Error in updateUserById:", error);
+    res.status(500).json({
+      message: "Failed to update user",
+      error: error.message,
+    });
+  }
+};
+
+export { login, signup, getUsersByStoreId, updateUserById };
