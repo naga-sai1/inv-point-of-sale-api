@@ -172,7 +172,7 @@ const updateUserById = async (req, res) => {
   try {
     const { Users } = await connectToDatabase();
     const { user_id } = req.params;
-    const { username, password, email, role, status } = req.body;
+    const { username, password, email, status } = req.body;
 
     const user = await Users.findOne({ where: { user_id } });
     if (!user) {
@@ -196,7 +196,6 @@ const updateUserById = async (req, res) => {
       username,
       password: password ? await bcrypt.hash(password, 10) : user.password,
       email,
-      role,
       status,
     });
 
