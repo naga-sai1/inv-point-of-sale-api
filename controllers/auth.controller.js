@@ -172,24 +172,27 @@ const updateUserById = async (req, res) => {
   try {
     const { Users } = await connectToDatabase();
     const { user_id } = req.params;
-    const { username, password, email, status } = req.body;
 
     const user = await Users.findOne({ where: { user_id } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // check if username or email already exists
-    const existingUser = await Users.findOne({
-      where: {
-        [Op.or]: [{ username }, { email }],
-        user_id: { [Op.ne]: user_id }, // exclude the current user
-      },
-    });
-    if (existingUser) {
-      return res.status(400).json({
-        message: "Username or email already exists",
+    // check if username or email already exists only for username and email on request
+
+    const { username, email, status, password } = req.body;
+    if (username && email) {
+      const existingUser = await Users.findOne({
+        where: {
+          [Op.or]: [{ username }, { email }],
+          user_id: { [Op.ne]: user_id }, // exclude the current user
+        },
       });
+      if (existingUser) {
+        return res.status(400).json({
+          message: "Username or email already exists",
+        });
+      }
     }
 
     await user.update({
