@@ -30,8 +30,8 @@ const login = async (req, res) => {
       const store = await Stores.findOne({
         where: { store_id: user.store_id },
       });
-      if (!store || !store.is_active) {
-        return res.status(403).json({ message: "Store is not active" });
+      if (!store || !store.is_active || user.status === false) {
+        return res.status(403).json({ message: "User or Store is not active" });
       }
     }
 
