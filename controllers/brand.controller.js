@@ -95,6 +95,7 @@ const createBrand = async (req, res) => {
       logo: logoBase64,
       status: req.body.status === "false" ? false : true,
       created_on,
+      store_id: req.params.store_id,
     });
 
     return res.status(201).json({
