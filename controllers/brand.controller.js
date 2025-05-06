@@ -113,9 +113,10 @@ const createBrand = async (req, res) => {
 
 // delete brand
 const deleteBrand = async (req, res) => {
+  let transaction; // Declare transaction outside the try block
   try {
     const { Brand, Product, sequelizeDatabase } = await connectToDatabase();
-    const transaction = await sequelizeDatabase.transaction();
+    transaction = await sequelizeDatabase.transaction(); // Initialize transaction
 
     const brand = await Brand.findOne({
       where: {
@@ -143,7 +144,9 @@ const deleteBrand = async (req, res) => {
     await transaction.commit();
     return res.status(200).json({ message: "Brand deleted successfully" });
   } catch (error) {
-    await transaction.rollback();
+    if (transaction) {
+      await transaction.rollback(); // Rollback transaction in case of error
+    }
     return res.status(500).json({ error: error.message });
   }
 };
