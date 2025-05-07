@@ -13,7 +13,6 @@ import {
 router.get("/get_all_brands/:store_id", getAllBrands);
 router.get("/get_brand/:id", getBrandById);
 router.post("/create_brand/:store_id", upload.single("logo"), createBrand);
-router.put("/update_brand/:id", upload.single("logo"), updateBrand);
 router.delete("/delete_brand/:id", deleteBrand);
 router.get("/brand_names", getBrandNames);
 
