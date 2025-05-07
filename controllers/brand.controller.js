@@ -1,4 +1,4 @@
-import {connectToDatabase} from "../config/db.js";
+import { connectToDatabase } from "../config/db.js";
 import { promises as fs } from "fs";
 import { Op } from "sequelize";
 
@@ -113,10 +113,10 @@ const createBrand = async (req, res) => {
 
 // delete brand
 const deleteBrand = async (req, res) => {
-  let transaction; // Declare transaction outside the try block
+  let transaction;
   try {
     const { Brand, Product, sequelizeDatabase } = await connectToDatabase();
-    transaction = await sequelizeDatabase.transaction(); // Initialize transaction
+    transaction = await sequelizeDatabase.transaction();
 
     const brand = await Brand.findOne({
       where: {
@@ -145,7 +145,7 @@ const deleteBrand = async (req, res) => {
     return res.status(200).json({ message: "Brand deleted successfully" });
   } catch (error) {
     if (transaction) {
-      await transaction.rollback(); // Rollback transaction in case of error
+      await transaction.rollback();
     }
     return res.status(500).json({ error: error.message });
   }
