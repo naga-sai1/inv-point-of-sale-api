@@ -6,7 +6,6 @@ import {
   getBrandById,
   createBrand,
   deleteBrand,
-  updateBrand,
   getBrandNames,
 } from "../controllers/brand.controller.js";
 
