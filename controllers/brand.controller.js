@@ -48,10 +48,10 @@ const createBrand = async (req, res) => {
     const brandExists = await Brand.findOne({
       where: {
         brand: req.body.brand,
-        is_active: true,
         store_id: req.params.store_id,
       },
     });
+
 
     if (brandExists) {
       if (brandExists.is_active) {
