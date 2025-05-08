@@ -191,10 +191,85 @@ const getBrandNames = async (req, res) => {
   }
 };
 
+const updateBrand = async (req, res) => {
+  try {
+    const { Brand } = await connectToDatabase();
+    const brand = await Brand.findOne({
+      where: {
+        brand_id: req.params.id,
+      },
+    });
+
+    if (!brand) {
+      // Clean up uploaded file if brand not found
+      if (req.file) {
+        await fs.unlink(req.file.path).catch(console.error);
+      }
+      return res.status(404).json({ message: "Brand not found" });
+    }
+
+    // Check if new brand name exists
+    if (req.body.brand) {
+      const existingBrand = await Brand.findOne({
+        where: {
+          brand: req.body.brand,
+          brand_id: { [Op.ne]: brand.brand_id },
+        },
+      });
+
+      if (existingBrand) {
+        if (req.file) {
+          await fs.unlink(req.file.path).catch(console.error);
+        }
+        return res.status(400).json({
+          message: existingBrand.is_active
+            ? "Brand is already active"
+            : "Brand is already inactive",
+          existingBrand,
+        });
+      }
+    }
+
+    // Handle logo update if file is uploaded
+    let logoBase64 = brand.logo; // Keep existing logo by default
+    if (req.file) {
+      // Read the file and convert to base64
+      const fileData = await fs.readFile(req.file.path);
+      logoBase64 = `data:${req.file.mimetype};base64,${fileData.toString(
+        "base64"
+      )}`;
+
+      // Delete the uploaded file after conversion
+      await fs.unlink(req.file.path).catch(console.error);
+    }
+
+    // Update fields
+    if (req.body.brand) brand.brand = req.body.brand;
+    brand.logo = logoBase64;
+    if (req.body.status !== undefined) {
+      brand.status = req.body.status === "false" ? false : true;
+    }
+
+    await brand.save();
+
+    return res.status(200).json({
+      message: "Brand updated successfully",
+      brand,
+    });
+  } catch (error) {
+    // Clean up uploaded file if there's an error
+    if (req.file) {
+      await fs.unlink(req.file.path).catch(console.error);
+    }
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   getAllBrands,
   getBrandById,
   createBrand,
   deleteBrand,
   getBrandNames,
+  updateBrand,
 };
