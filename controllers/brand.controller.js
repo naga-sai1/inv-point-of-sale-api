@@ -115,38 +115,62 @@ const createBrand = async (req, res) => {
 const deleteBrand = async (req, res) => {
   let transaction;
   try {
-    const { Brand, Product, sequelizeDatabase } = await connectToDatabase();
+    const { Brand, Products, sequelizeDatabase } = await connectToDatabase();
     transaction = await sequelizeDatabase.transaction();
+    console.log("brand id:-", req.params.id);
 
+    // Find the brand by ID
     const brand = await Brand.findOne({
       where: {
         brand_id: req.params.id,
       },
       transaction,
     });
+
+    // Check if the brand exists
     if (!brand) {
+      await transaction.rollback();
       return res.status(404).json({ message: "Brand not found" });
     }
+
+    // Update the brand to set is_active to false
     await brand.update({ is_active: false }, { transaction });
 
-    await Product.update(
-      {
-        is_active: false,
-        brand_id: null,
+
+    // check if the brand has any associated products
+    const associatedProducts = await Products.findAll({
+      where: {
+        brand_id: req.params.id,
+        is_active: true,
       },
-      {
-        where: {
-          brand_id: req.params.id,
+      transaction,
+    });
+
+    if (associatedProducts.length > 0) {
+      // If there are associated products, set their brand_id to null and is_active to false
+      await Product.update(
+        {
+          is_active: false,
+          brand_id: null,
         },
-        transaction,
-      }
-    );
+        {
+          where: {
+            brand_id: req.params.id,
+            is_active: true,
+          },
+          transaction,
+        }
+      );
+    }
+
+    // Commit the transaction
     await transaction.commit();
     return res.status(200).json({ message: "Brand deleted successfully" });
   } catch (error) {
     if (transaction) {
       await transaction.rollback();
     }
+    console.error("Error in deleteBrand:", error);
     return res.status(500).json({ error: error.message });
   }
 };
