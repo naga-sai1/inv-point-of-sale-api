@@ -181,7 +181,8 @@ const getBrandNames = async (req, res) => {
     const { Brand } = await connectToDatabase();
     const brands = await Brand.findAll({
       attributes: ["brand_id", "brand"],
-      where: { is_active: true, status: true },
+      where: { is_active: true, status: true, store_id: req.params.store_id },
+      order: [["brand", "ASC"]],
     });
     return res.status(200).json(brands);
   } catch {
@@ -191,6 +192,7 @@ const getBrandNames = async (req, res) => {
   }
 };
 
+// update brand
 const updateBrand = async (req, res) => {
   try {
     const { Brand } = await connectToDatabase();
